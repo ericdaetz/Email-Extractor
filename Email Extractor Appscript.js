@@ -16,7 +16,7 @@ const TIME_FORMAT = "en-US";
 const TIME_ZONE = "America/Los_Angeles";
 
 //Author: Eric Daetz
-//Date: May 22, 2025
+//Date (Updated): June 3, 2025
 //Description: An email parsing script designed to help me populate a Google Sheet with job listings pulled from LinkedIn alert emails.
 //             I thought this would be a fun project to do to show that I'm eager to learn while hunting for a job. I wanted to provide as many
 //             constants as possible such that this script can be edited easily for future usage or different time zones.
@@ -40,8 +40,6 @@ function onOpen(){
 
   //before parsing all the emails, make sure it even needs to be updated yet (updates daily)
   if(checkInitialUpdate(sheet, currDTArray,lastDTArray)){
-    //Logger.log(`currDTArray: ${currDTArray}`);
-    //Logger.log(`lastDTArray: ${lastDTArray}`);
     extractEmails(sheet,lastDTArray);
   }
 }
@@ -64,14 +62,6 @@ function checkInitialUpdate(sheet, currDTArray,lastDTArray){
 
 //returns TRUE if change needed, FALSE otherwise
 function checkUpdate(currDTArray, lastDTArray){
-
-  /* Bunch of DEBUG STUFF 
-  Logger.log("Reached checkUpdate");
-  Logger.log(`currDTArray: ${currDTArray}`);
-  Logger.log(`lastDTArray: ${lastDTArray}`);
-  Logger.log(typeof(currDTArray[0]));
-  Logger.log(typeof(lastDTArray[0]));
-  */
   
   //if lastDTArray is null, always update
   if(lastDTArray == null){
@@ -151,7 +141,6 @@ function extractBody(messageBody, emailDateString, sheet){
       extracted_listings.push({title: messageBody_lines[i], company: messageBody_lines[i+1], location: messageBody_lines[i+2], url: DEFAULT_LINK, no: DEFAULT_NO, date: emailDateString, status: DEFAULT_STATUS});
       current_idx = extracted_listings.length - 1;
       valid_job = true;
-      Logger.log(extracted_listings[current_idx]);
     }
     else if(JOB_LINK_REGEX.test(messageBody_lines[i]) && valid_job){
       extracted_listings[current_idx].url = "" + messageBody_lines[i];
@@ -173,8 +162,6 @@ function extractBody(messageBody, emailDateString, sheet){
     }
 
   }
-
-  //Logger.log(extracted_listings[0]);
   
 }
 
@@ -187,11 +174,8 @@ function extractEmails(sheet, lastDTArray){
   const threads = GmailApp.getInboxThreads(0,MAX_EMAILS);
   for(let i = 0; i < MAX_EMAILS; i++){
 
-    //Logger.log("Outer loop reached");
-
     const messages = threads[i].getMessages();
     for(let j = 0; j < messages.length; j++){
-      //Logger.log(`Inner loop count: ${j} Outer loop count: ${i}`);
 
       const emailDate = messages[j].getDate();
       const emailDateString = emailDate.toLocaleDateString(TIME_FORMAT, {timeZone: TIME_ZONE});
