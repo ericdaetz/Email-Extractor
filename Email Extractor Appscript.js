@@ -16,7 +16,7 @@ const TIME_FORMAT = "en-US";
 const TIME_ZONE = "America/Los_Angeles";
 
 //Author: Eric Daetz
-//Date (Updated): June 3, 2025
+//Date (Updated): July 2, 2025
 //Description: An email parsing script designed to help me populate a Google Sheet with job listings pulled from LinkedIn alert emails.
 //             I thought this would be a fun project to do to show that I'm eager to learn while hunting for a job. I wanted to provide as many
 //             constants as possible such that this script can be edited easily for future usage or different time zones.
@@ -172,10 +172,10 @@ function extractEmails(sheet, lastDTArray){
 
   //Extracting up to 50 Emails; More than that seems unnecessary due to timely job alerts being most relevant
   const threads = GmailApp.getInboxThreads(0,MAX_EMAILS);
-  for(let i = 0; i < MAX_EMAILS; i++){
+  for(let i = MAX_EMAILS - 1; i >= 0; i--){
 
     const messages = threads[i].getMessages();
-    for(let j = 0; j < messages.length; j++){
+    for(let j = messages.length - 1; j >= 0; j--){
 
       const emailDate = messages[j].getDate();
       const emailDateString = emailDate.toLocaleDateString(TIME_FORMAT, {timeZone: TIME_ZONE});
